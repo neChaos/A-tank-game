@@ -70,6 +70,7 @@ function MAIN(){
             return;
         }
         var x1= tank.bullets.x,y1=tank.bullets.y;
+        crash(tank,context,that);
         // 判定子弹是否碰墙（地图边缘和子弹四周是否有墙）
         if(tank.bullets.wallBoom<0&&y1-16>=0&&y1+16<=416&&x1-16>=0&&x1+16<=416&&map[y1/16][x1/16]==0&&map[y1/16-1][x1/16-1]==0&&map[y1/16-1][x1/16]==0&&map[y1/16][x1/16-1]==0){
             // 取得子弹在图片初始位置            
