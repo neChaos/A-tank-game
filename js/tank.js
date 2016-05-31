@@ -7,7 +7,42 @@ function MAIN(){
         var ct=c.getContext("2d");
         return ct;
     };
-        // 坦克碰撞判定
+    // 炮弹机会坦克判定
+    this.crash=function (tank,context,that){
+         // 敌方坦克是否碰撞玩家坦克
+        if(context==ctx1&&Math.sqrt(Math.pow(Math.abs(tank.bullets.x-p.x),2)+Math.pow(Math.abs(tank.bullets.y-p.y),2))<=20){
+            playDirections[1]=1;
+            playDirections[0]=null;    
+            if(tank.bullets.tankBoom<3){
+                tank.bullets.tankBoom+=1;
+                that.apear(tank.bullets,tank.bullets.tankBoom,"tankBoom",p);
+                return;
+            }else{
+                playPosition.x=144;playPosition.y=384;
+                p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP");
+                tank.bullets=null;
+                return;
+            }               
+        }
+        // 玩家子弹与敌方坦克判定
+        else if(context==ctx2){
+          for(var i=0;i<=enemys.length-1;i++){
+                if(Math.abs(tank.bullets.x-enemys[i].x-16)<=30&&Math.abs(tank.bullets.y-enemys[i].y-16)<=30){
+                        tank.bullets.tankBoom+=1;                 
+                        that.apear(tank.bullets,tank.bullets.tankBoom,"tankBoom",enemys[i]);
+                        if(tank.bullets.tankBoom==3){
+                            // var newEtype=that.selectNewETank();                  
+                            // var newTank=new Tank(i%3*194,0,newEtype,"DOWN");
+                            var newTank=that.bornEnemy(i%3*194,0,"DOWN"); 
+                            enemys.splice(i,1,newTank);
+                            tank.bullets=null;
+                            break;
+                        };
+                }
+            }      
+        }
+    };
+        // 坦克碰墙判定
     this.directions=[
         {           
             x:"DOWN",
@@ -70,7 +105,7 @@ function MAIN(){
             return;
         }
         var x1= tank.bullets.x,y1=tank.bullets.y;
-        crash(tank,context,that);
+        that.crash(tank,context,that);
         if(tank.bullets==null||tank.bullets.tankBoom!=-1){
             return;
         }
@@ -232,13 +267,16 @@ function MAIN(){
     };
     this.drawEnemy=function(context){
         var x1=0,y1=0,that=this;
+        // 游戏开始先画6个坦克
         if(enemys.length!=6){
             if(enemys.length+1-3>0){
                 x1=(enemys.length+1-3-1)*192;
             }else{
                 x1=(enemys.length+1-1)*192;
-            };   
-            var newEnemy=new Tank(x1,y1,imgPosition.enemy1,"DOWN");
+            };
+            var newEnemy=that.bornEnemy(x1,y1,"DOWN");
+            // var newEtype=this.selectNewETank();   
+            // var newEnemy=new Tank(x1,y1,newEtype,"DOWN");
             enemys.push(newEnemy);
         };
         context.clearRect(0,0,416,416);
@@ -263,4 +301,18 @@ function MAIN(){
             }     
         };
     };
+    this.bornEnemy=function(x,y,direction){
+        for(var i=0;i<=bornEnemys.length-1;i++){
+            if(bornEnemys[i].amount!=0){
+                bornEnemys[i].amount-=1;
+                switch(i){
+                    case 0:var speed=1;break;
+                    case 1:var speed=2;break;
+                    case 2:var speed=0.5;break;
+                }
+                var newTank=new Tank(x,y,bornEnemys[i].type,direction,speed);
+                return newTank;
+            }
+        }
+    }
 };

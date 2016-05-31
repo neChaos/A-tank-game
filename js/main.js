@@ -1,7 +1,7 @@
 var img=new Image();
 img.src="images/tankAll.gif";
 // 坦克对象
-var Tank=function (x,y,type,direction){
+var Tank=function (x,y,type,direction,speed){
     this.x=x;
     this.y=y;
     this.type=type;
@@ -10,6 +10,8 @@ var Tank=function (x,y,type,direction){
     this.bullets=null;
     // 坦克生命值
     this.HP=1;
+    // 敌方不同类型坦克依照这个值提升速度
+    this.speed=speed;
 };
 // 敌方坦克出生位置
 var enemysPostion=[{x:0,y:0},{x:216,y:0},{x:416,y:0}];

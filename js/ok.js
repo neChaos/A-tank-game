@@ -1,4 +1,5 @@
 function crash(tank,context,that){
+    // 敌方坦克是否碰撞玩家坦克
     if(context==ctx1&&Math.sqrt(Math.pow(Math.abs(tank.bullets.x-p.x),2)+Math.pow(Math.abs(tank.bullets.y-p.y),2))<=20){
         playDirections[1]=1;
         playDirections[0]=null;    
@@ -12,35 +13,22 @@ function crash(tank,context,that){
             tank.bullets=null;
             return;
         }               
-    }else if(context==ctx2){
-    try{
-      for(var i=0;i<=enemys.length-1;i++){
-            if(enemys[i].HP==0){
-                continue;
-            }else if(Math.abs(tank.bullets.x-enemys[i].x-16)<=30&&Math.abs(tank.bullets.y-enemys[i].y-16)<=30){
-                // Math.sqrt(Math.pow(Math.abs(x1-enemys[i].x),2)+Math.pow(Math.abs(y1-enemys[i].y),2))<=20
-                // console.
-                if(tank.bullets.tankBoom<3){
-                    console.log("hello");
-                    tank.bullets.tankBoom+=1;
-                    that.apear(tank.bullets,tank.bullets.tankBoom,"tankBoom",enemys[i]);
-                    return;
-                }
-                else{
-                    enemys[i].HP=0;
-                    var newTank=new Tank(i%3*194,0,imgPosition.enemy1,"DOWN"); 
-                    enemys.splice(i,1,newTank);
-                    tank.bullets=null;
-                    // return;
-                }
-                console.log("crash");
-            }
-        }  
-    }catch(e){
-        console.log(tank);
-    }       
-        
     }
-}
+    // 玩家子弹与敌方坦克判定
+    else if(context==ctx2){
+      for(var i=0;i<=enemys.length-1;i++){
+            if(Math.abs(tank.bullets.x-enemys[i].x-16)<=30&&Math.abs(tank.bullets.y-enemys[i].y-16)<=30){
+                    tank.bullets.tankBoom+=1;                 
+                    that.apear(tank.bullets,tank.bullets.tankBoom,"tankBoom",enemys[i]);
+                    if(tank.bullets.tankBoom==3){                  
+                        var newTank=new Tank(i%3*194,0,imgPosition.enemy1,"DOWN"); 
+                        enemys.splice(i,1,newTank);
+                        tank.bullets=null;
+                        break;
+                    };
+            }
+        }      
+    }
+};
 
 
