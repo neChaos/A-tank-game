@@ -19,7 +19,7 @@ function MAIN(){
                 return;
             }else{
                 playPosition.x=144;playPosition.y=384;
-                p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP");
+                p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP",1);
                 tank.bullets=null;
                 return;
             }               
@@ -28,11 +28,14 @@ function MAIN(){
         else if(context==ctx2){
           for(var i=0;i<=enemys.length-1;i++){
                 if(Math.abs(tank.bullets.x-enemys[i].x-16)<=30&&Math.abs(tank.bullets.y-enemys[i].y-16)<=30){
+                        if(enemys[i].type[1]==64&&enemys[i].type[0]+32*4<=352){
+                            enemys[i].type=[enemys[i].type[0]+32*4,64];
+                            tank.bullets=null;
+                            return;
+                        };
                         tank.bullets.tankBoom+=1;                 
                         that.apear(tank.bullets,tank.bullets.tankBoom,"tankBoom",enemys[i]);
                         if(tank.bullets.tankBoom==3){
-                            // var newEtype=that.selectNewETank();                  
-                            // var newTank=new Tank(i%3*194,0,newEtype,"DOWN");
                             var newTank=that.bornEnemy(i%3*194,0,"DOWN"); 
                             enemys.splice(i,1,newTank);
                             tank.bullets=null;
@@ -46,32 +49,32 @@ function MAIN(){
     this.directions=[
         {           
             x:"DOWN",
-            y:function(tank){
-                if(tank.y+4<=384&&/*右下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x-1)/16)+2]==0&&/*左下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x+1)/16)]==0){
-                    tank.y+=4;}else{return;}
+            y:function(tank){    
+                if(tank.y+4*tank.speed<=384&&/*右下点*/map[Math.floor((tank.y+(tank.speed*4-1))/16)+2][Math.floor((tank.x-1)/16)+2]==0&&/*左下点*/map[Math.floor((tank.y+(tank.speed*4-1))/16)+2][Math.floor((tank.x+1)/16)]==0){
+                    tank.y+=4*tank.speed;}else{return;}
             }
         },
         {
             x:"UP",
             y:function(tank){
-                if(tank.y-4>=0&&/*左上点*/map[Math.floor((tank.y-3)/16)][Math.floor((tank.x+1)/16)]==0&&/*右上点*/map[Math.floor((tank.y-3)/16)][Math.floor((tank.x-1)/16)+2]==0){
-                    tank.y-=4;}else{return;}
+                if(tank.y-4*tank.speed>=0&&/*左上点*/map[Math.floor((tank.y-(tank.speed*4-1))/16)][Math.floor((tank.x+1)/16)]==0&&/*右上点*/map[Math.floor((tank.y-(tank.speed*4-1))/16)][Math.floor((tank.x-1)/16)+2]==0){
+                    tank.y-=4*tank.speed;}else{return;}
             }
                 
         },
         {
             x:"LEFT",
             y:function(tank){
-                if(tank.x-4>=0&&map[Math.floor((tank.y+1)/16)][Math.floor((tank.x-3)/16)]==0&&map[Math.floor((tank.y-1)/16)+2][Math.floor((tank.x-3)/16)]==0){
-                    tank.x-=4;}else{return;}
+                if(tank.x-4*tank.speed>=0&&map[Math.floor((tank.y+1)/16)][Math.floor((tank.x-(tank.speed*4-1))/16)]==0&&map[Math.floor((tank.y-1)/16)+2][Math.floor((tank.x-(tank.speed*4-1))/16)]==0){
+                    tank.x-=4*tank.speed;}else{return;}
             }
                 
         },
         {
             x:"RIGHT",
             y:function(tank){
-                if(tank.x+4<=384&&map[Math.floor((tank.y-1)/16)+2][Math.floor((tank.x+3)/16)+2]==0&&map[Math.floor((tank.y+1)/16)][Math.floor((tank.x+3)/16)+2]==0){
-                    tank.x+=4;}else{return;}
+                if(tank.x+4*tank.speed<=384&&map[Math.floor((tank.y-1)/16)+2][Math.floor((tank.x+(tank.speed*4-1))/16)+2]==0&&map[Math.floor((tank.y+1)/16)][Math.floor((tank.x+(tank.speed*4-1))/16)+2]==0){
+                    tank.x+=4*tank.speed;}else{return;}
             }
                 
         }];
@@ -155,7 +158,7 @@ function MAIN(){
             x1=tank.type[0]+64;
         };
         // 如果敌方坦克在16整数倍坐标，自动发射子弹
-         if(tank.type==imgPosition.enemy1||tank.type==imgPosition.enemy2||tank.type==imgPosition.enemy3){
+         if(tank.type[1]!=0){
             if(tank.x%16==0&&tank.y%16==0&&tank.bullets==null){
                 var bullet=new BULLET(tank.x+16,tank.y+16,tank.direction);
                 tank.bullets=bullet;
@@ -181,11 +184,10 @@ function MAIN(){
         for(var i=0;i<=directions.length-1;i++){
             if(directions[i].x==playDirections[0]){
                 var index=i;
-                directions[i].y(playPosition);
+                directions[i].y(p);
             }
         };
-        // 玩家坦克重置数据
-        p.x=playPosition.x;p.y=playPosition.y;p.type=imgPosition.player;p.direction=playDirections[0];
+        p.direction=playDirections[0];
     };
     // 判断玩家子弹发射事件函数
     this.isDirTrue=function(event){
@@ -228,9 +230,9 @@ function MAIN(){
         var ax=setInterval(function(){
             // 判断按键是否是上下键
             if(e%2==0){
-                var x1=playPosition.y;
+                var x1=p.y;
              }else{
-                var x1=playPosition.x;
+                var x1=p.x;
              };
              // 玩家坐标是否是16的整数
             if(x1%16==0){
@@ -275,18 +277,12 @@ function MAIN(){
                 x1=(enemys.length+1-1)*192;
             };
             var newEnemy=that.bornEnemy(x1,y1,"DOWN");
-            // var newEtype=this.selectNewETank();   
-            // var newEnemy=new Tank(x1,y1,newEtype,"DOWN");
             enemys.push(newEnemy);
         };
         context.clearRect(0,0,416,416);
         for(var i=0;i<=enemys.length-1;i++){
-            // 坦克是否有生命
-            if(enemys[i].HP==0){
-                continue;
-            }
             // 轮流画敌方坦克出现前的四角星
-            else if(enemys[i].ready[1]==false){
+            if(enemys[i].ready[1]==false){
                 if(i==0||enemys[i-1].ready[1]==true){
                     this.apear(enemys[i],enemys[i].ready[0],"born");
                     enemys[i].ready[0]+=1;                       
@@ -308,7 +304,7 @@ function MAIN(){
                 switch(i){
                     case 0:var speed=1;break;
                     case 1:var speed=2;break;
-                    case 2:var speed=0.5;break;
+                    case 2:var speed=1;break;
                 }
                 var newTank=new Tank(x,y,bornEnemys[i].type,direction,speed);
                 return newTank;

@@ -12,14 +12,14 @@ var imgPosition={
 }
 
 var playPosition={
-    x:144,
-    y:400
+    x:128,
+    y:368
             };
 // 所有出生的敌人
 var bornEnemys=[
     {
         type:imgPosition.enemy1,
-        amount:10
+        amount:6
     },
     {
         type:imgPosition.enemy2,
@@ -31,4 +31,4 @@ var bornEnemys=[
     }
 
 ];
-
+    

@@ -3,7 +3,7 @@ var ctx=a.createContext("mCanvas");
 var ctx1=a.createContext("eCanvas");
 var ctx2=a.createContext("tCanvas");
 // 初始化玩家坦克
-var p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP");
+var p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP",1);
 // 避免开网页时出现黑白地图，提前画出地图
 window.onload=function(){
     a.drawMap(ctx);

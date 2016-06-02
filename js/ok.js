@@ -30,5 +30,12 @@ function crash(tank,context,that){
         }      
     }
 };
+x:"DOWN",
+            y:function(tank){
+                if(tank.y+4<=384&&/*右下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x-1)/16)+2]==0&&/*左下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x+1)/16)]==0){
+                    tank.y+=4;}else{return;}   
+                if(tank.y+4*tank.speed<=384&&/*右下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x-1)/16)+2]==0&&/*左下点*/map[Math.floor((tank.y+3)/16)+2][Math.floor((tank.x+1)/16)]==0){
+                    tank.y+=4*tank.speed;}else{return;}
+            } 
 
 
