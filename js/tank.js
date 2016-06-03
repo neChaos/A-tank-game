@@ -9,7 +9,7 @@ function MAIN(){
     };
     // 炮弹机会坦克判定
     this.crash=function (tank,context,that){
-         // 敌方坦克是否碰撞玩家坦克
+         // 敌方坦克子弹是否碰撞玩家坦克
         if(context==ctx1&&Math.sqrt(Math.pow(Math.abs(tank.bullets.x-p.x),2)+Math.pow(Math.abs(tank.bullets.y-p.y),2))<=20){
             playDirections[1]=1;
             playDirections[0]=null;    
@@ -20,6 +20,7 @@ function MAIN(){
             }else{
                 playPosition.x=144;playPosition.y=384;
                 p=new Tank(playPosition.x,playPosition.y,imgPosition.player,"UP",1);
+                playerHp-=1;
                 tank.bullets=null;
                 return;
             }               
@@ -27,6 +28,9 @@ function MAIN(){
         // 玩家子弹与敌方坦克判定
         else if(context==ctx2){
           for(var i=0;i<=enemys.length-1;i++){
+                if(enemys[i]==undefined){
+                    continue;
+                };
                 if(Math.abs(tank.bullets.x-enemys[i].x-16)<=30&&Math.abs(tank.bullets.y-enemys[i].y-16)<=30){
                         if(enemys[i].type[1]==64&&enemys[i].type[0]+32*4<=352){
                             enemys[i].type=[enemys[i].type[0]+32*4,64];
@@ -45,6 +49,22 @@ function MAIN(){
             }      
         }
     };
+    // 检测是否胜利或者失败
+    this.test=function(){
+        if(playerHp==0||imgPosition.home[0]>256){
+            clearInterval(playerM);
+            clearInterval(enemysM);
+            ctx1.fillStyle="red";
+            ctx1.font="100px Arial";
+            ctx1.fillText("LOST",100,208);
+        }else if(bornEnemys[2].amount==-6){
+            clearInterval(playerM);
+            clearInterval(enemysM);
+            ctx1.fillStyle="green";
+            ctx1.font="100px Arial";
+            ctx1.fillText("WIN",100,100,208);
+        }
+    }
         // 坦克碰墙判定
     this.directions=[
         {           
@@ -84,12 +104,13 @@ function MAIN(){
             for(var j=0;j<=map[i].length-1;j++){
                 if(map[i][j]==0){
                     context.fillRect(j*16,i*16,16,16);
-                }else if(map[i][j]==1){
+                }else if(map[i][j]==5){
                     context.drawImage(img,imgPosition.wall[0],imgPosition.wall[1],16,16,j*16,i*16,16,16)
-                }else if(map[i][j]==2){
-                   context.drawImage(img,imgPosition.wall[0]+16,imgPosition.wall[1],16,16,j*16,i*16,16,16) 
-                };
-                
+                }else if(map[i][j]==1){
+                    context.drawImage(img,imgPosition.wall[0]+16,imgPosition.wall[1],16,16,j*16,i*16,16,16) 
+                }else if(map[i][j]==9){
+                    context.drawImage(img,imgPosition.home[0],imgPosition.home[1],32,32,j*16,i*16,32,32) 
+                }               
             }
         };
     };
@@ -130,11 +151,13 @@ function MAIN(){
         }else{
             // 如果是土墙直接清除
             if(x1!=0&&x1!=416&&y1!=0&&y1!=416){
-                if(map[y1/16][x1/16]==1||map[y1/16-1][x1/16-1]==1||map[y1/16][x1/16-1]==1||map[y1/16-1][x1/16]==1){
-                    map[y1/16][x1/16]=0;
-                    map[y1/16-1][x1/16-1]=0;
-                    map[y1/16-1][x1/16]=0;
-                    map[y1/16][x1/16-1]=0;
+                if(map[y1/16][x1/16]>7||map[y1/16-1][x1/16-1]>7||map[y1/16][x1/16-1]>7||map[y1/16-1][x1/16]>7){
+                    imgPosition.home=[288,0];
+                }else if(map[y1/16][x1/16]==5||map[y1/16-1][x1/16-1]==5||map[y1/16][x1/16-1]==5||map[y1/16-1][x1/16]==5){
+                    map[y1/16][x1/16]=map[y1/16][x1/16]%5;
+                    map[y1/16-1][x1/16-1]=map[y1/16-1][x1/16-1]%5;
+                    map[y1/16-1][x1/16]=map[y1/16-1][x1/16]%5;
+                    map[y1/16][x1/16-1]=map[y1/16][x1/16-1]%5;
                 }
             }
             if(tank.bullets.wallBoom<2){
@@ -281,6 +304,9 @@ function MAIN(){
         };
         context.clearRect(0,0,416,416);
         for(var i=0;i<=enemys.length-1;i++){
+            if(enemys[i]==undefined){
+                continue;
+            };
             // 轮流画敌方坦克出现前的四角星
             if(enemys[i].ready[1]==false){
                 if(i==0||enemys[i-1].ready[1]==true){
@@ -299,7 +325,7 @@ function MAIN(){
     };
     this.bornEnemy=function(x,y,direction){
         for(var i=0;i<=bornEnemys.length-1;i++){
-            if(bornEnemys[i].amount!=0){
+            if(bornEnemys[i].amount>0){
                 bornEnemys[i].amount-=1;
                 switch(i){
                     case 0:var speed=1;break;
@@ -308,6 +334,8 @@ function MAIN(){
                 }
                 var newTank=new Tank(x,y,bornEnemys[i].type,direction,speed);
                 return newTank;
+            }else if(i==2&&bornEnemys[i].amount<=0){
+                bornEnemys[i].amount-=1;
             }
         }
     }

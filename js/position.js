@@ -23,12 +23,13 @@ var bornEnemys=[
     },
     {
         type:imgPosition.enemy2,
-        amount:10
+        amount:6
     },
     {
         type:imgPosition.enemy3,
-        amout:15
+        amount:4
     }
 
 ];
+var playerHp=3;
     

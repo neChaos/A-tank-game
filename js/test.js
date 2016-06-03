@@ -19,7 +19,7 @@ addEventListener("keydown",a.isDirTrue,false);
 addEventListener("keyup",a.isDirTrue,false);
 addEventListener("keydown",a.keyDown,false);
 addEventListener("keyup",a.keyUp,false);
-var reee=setInterval(function(){
+var playerM=setInterval(function(){
             ctx2.clearRect(0,0,416,416);           
             a.moveTank();            
             a.drawTank(p,ctx2);
@@ -27,4 +27,5 @@ var reee=setInterval(function(){
             a.bulletLaunch(p,ctx2,a);
 
 },50);
-setInterval(function(){a.drawEnemy(ctx1);},100);
+var enemysM=setInterval(function(){a.drawEnemy(ctx1);},100);
+setInterval(a.test,100)
