@@ -19,15 +19,15 @@ var playPosition={
 var bornEnemys=[
     {
         type:imgPosition.enemy1,
-        amount:6
+        amount:10
     },
     {
         type:imgPosition.enemy2,
-        amount:6
+        amount:10
     },
     {
         type:imgPosition.enemy3,
-        amount:4
+        amount:6
     }
 
 ];
