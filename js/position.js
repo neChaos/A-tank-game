@@ -1,4 +1,4 @@
-var imgPosition={
+var imgPosition = {
     home:[256,0],
     wall:[0,96],
     player:[0,0],
@@ -11,12 +11,12 @@ var imgPosition={
     enemyApear:[256,32]
 }
 
-var playPosition={
+var playPosition = {
     x:128,
     y:368
-            };
+};
 // 所有出生的敌人
-var bornEnemys=[
+var bornEnemys = [
     {
         type:imgPosition.enemy1,
         amount:10
@@ -29,7 +29,6 @@ var bornEnemys=[
         type:imgPosition.enemy3,
         amount:6
     }
-
 ];
 var playerHp=3;
     
