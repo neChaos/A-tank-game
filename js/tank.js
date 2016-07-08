@@ -2,9 +2,11 @@
 function MAIN(){
     /*1.共同方法*/
     // 创建画布
-    this.createContext=function(canvasId){
-       var c=document.getElementById(canvasId);
-        var ct=c.getContext("2d");
+    this.createContext = function(canvasId){
+        
+        var c  = document.getElementById(canvasId);
+        var ct = c.getContext("2d");
+        
         return ct;
     };
     // 炮弹机会坦克判定
